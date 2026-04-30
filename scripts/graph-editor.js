@@ -1,5 +1,7 @@
 ﻿"use strict";
 
+let colorNoticeTimer = null;
+
 function addNode(type, params = null, options = {}) {
   if (!unlockedToolSet().has(type)) return;
   const source = state.graph.outputSource || lastNodeId() || "input";
@@ -39,7 +41,7 @@ function onNodeInput(event) {
   const target = event.target;
   if (!target.closest("[data-node-id]") && target.dataset.outputSelect !== "true") return;
   readGraphFromDom();
-  renderAll(false);
+  renderAll(false, { deferColorNotices: event.type === "input" && target.matches("[data-equation-index]") });
   if (event.type === "change") playSound("wire");
 }
 
@@ -104,7 +106,7 @@ function readGraphFromDom() {
   state.graph.outputSource = output ? output.value : "";
 }
 
-function renderAll(rebuild = true) {
+function renderAll(rebuild = true, options = {}) {
   if (state.baseImageData) {
     drawImage(dom.inputCtx, state.baseImageData);
     drawMiniImage(dom.miniInputCtx, state.baseImageData);
@@ -114,16 +116,23 @@ function renderAll(rebuild = true) {
     drawMiniImage(dom.miniTargetCtx, state.targetImageData);
   }
   if (rebuild) renderNodeBoard();
-  renderOutput();
+  renderOutput(options);
   updateGraphJson();
   window.setTimeout(drawWires, 30);
   renderTutorial();
   updateNextLevelButton();
 }
 
-function renderOutput() {
+function renderOutput(options = {}) {
   const result = evaluateGraph(state.graph, state.baseImageData);
   state.outputImageData = result.image;
+  if (options.deferColorNotices) {
+    renderColorNotices(new Map());
+    scheduleColorNoticeRender();
+  } else {
+    clearColorNoticeTimer();
+    renderColorNotices(result.nodeNotices || new Map());
+  }
   if (result.image) {
     drawImage(dom.outputCtx, result.image);
     drawMiniImage(dom.miniOutputCtx, result.image);
@@ -143,6 +152,20 @@ function renderOutput() {
     dom.scoreDetail.textContent = result.error;
     dom.scoreBreakdown.textContent = "Connect every required input, then connect Output.";
   }
+}
+
+function scheduleColorNoticeRender() {
+  clearColorNoticeTimer();
+  colorNoticeTimer = window.setTimeout(() => {
+    colorNoticeTimer = null;
+    renderOutput();
+  }, 650);
+}
+
+function clearColorNoticeTimer() {
+  if (!colorNoticeTimer) return;
+  window.clearTimeout(colorNoticeTimer);
+  colorNoticeTimer = null;
 }
 
 function renderNodeBoard() {
@@ -234,7 +257,8 @@ function nodeMarkup(node, index) {
       <label class="field mini"><span>Input</span>${sourceSelect(node.id, node.input || "input", "data-param='input'")}</label>
       <div class="node-grid equations">
         ${p.expressions.map((expression, i) => `<label class="field mini equation-field"><span>Out ${escapeHtml(p.labels[i] || `Ch ${i + 1}`)}</span><input data-param="eq${i}" data-equation-index="${i}" type="text" spellcheck="false" value="${escapeHtml(expression)}"></label>`).join("")}
-      </div>`;
+      </div>
+      <div class="color-notices" data-color-notices="${node.id}" aria-live="polite"></div>`;
   }
   if (node.type === "affine") {
     const p = normalizeAffine(node.params);
@@ -321,27 +345,49 @@ function drawWires() {
 }
 
 function evaluateGraph(graph, inputImage) {
-  if (!inputImage) return { image: null, error: "No input image" };
+  if (!inputImage) return { image: null, error: "No input image", nodeNotices: new Map() };
   const outputs = new Map([["input", inputImage]]);
+  const nodeNotices = new Map();
   for (const node of graph.nodes) {
     if (node.type === "recombine") {
       const a = outputs.get(node.inputA);
       const b = outputs.get(node.inputB);
-      if (!a || !b) return { image: null, error: `Missing input for ${node.id}` };
+      if (!a || !b) return { image: null, error: `Missing input for ${node.id}`, nodeNotices };
       outputs.set(node.id, applyRecombine(a, b, node.params));
     } else {
       const source = outputs.get(node.input);
-      if (!source) return { image: null, error: `Missing input for ${node.id}` };
-      if (node.type === "color") outputs.set(node.id, applyColor(source, node.params));
+      if (!source) return { image: null, error: `Missing input for ${node.id}`, nodeNotices };
+      if (node.type === "color") {
+        const colorOutput = applyColor(source, node.params);
+        outputs.set(node.id, colorOutput);
+        nodeNotices.set(node.id, colorOutput.colorNotice || {});
+      }
       else if (node.type === "affine") outputs.set(node.id, applyAffine(source, node.params));
       else if (node.type === "kernel") outputs.set(node.id, applyKernel(source, node.params));
       else if (node.type === "split") outputs.set(node.id, cloneImageData(source));
     }
   }
-  if (!graph.outputSource) return { image: null, error: "Output disconnected" };
+  if (!graph.outputSource) return { image: null, error: "Output disconnected", nodeNotices };
   const image = outputs.get(graph.outputSource);
-  if (!image) return { image: null, error: "Output source missing" };
-  return { image, error: "" };
+  if (!image) return { image: null, error: "Output source missing", nodeNotices };
+  return { image, error: "", nodeNotices };
+}
+
+function renderColorNotices(nodeNotices) {
+  dom.nodeBoard.querySelectorAll("[data-color-notices]").forEach((container) => {
+    const notice = nodeNotices.get(container.dataset.colorNotices) || {};
+    const invalid = Array.isArray(notice.invalidExpressions) ? notice.invalidExpressions : [];
+    const items = [];
+    if (invalid.length) {
+      const details = invalid.map((item) => `${item.label}: ${item.source} (${item.reason})`).join(" ");
+      items.push(`<div class="color-notice error"><strong>Invalid expression</strong><p>${escapeHtml(details)} ${escapeHtml(colorExpressionHelpText())}</p></div>`);
+    }
+    if (notice.clampedPixels > 0) {
+      const title = "All input and output values should be within 0 to 255. Values below 0 evaluate to 0, and values above 255 evaluate to 255.";
+      items.push(`<div class="color-notice warning"><strong>Values clamped <span class="info-dot" tabindex="0" role="note" aria-label="${escapeHtml(title)}" data-tooltip="${escapeHtml(title)}">ⓘ</span></strong><p>${notice.clampedPixels} pixel${notice.clampedPixels === 1 ? "" : "s"} had values outside 0 to 255 and were clamped.</p></div>`);
+    }
+    container.innerHTML = items.join("");
+  });
 }
 
 

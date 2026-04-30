@@ -55,7 +55,7 @@ function bindEvents() {
     if (!button) return;
     applyRecommendation(button.dataset.rec);
   });
-  dom.nodeBoard.addEventListener("input", onNodeInput);
+    dom.nodeBoard.addEventListener("input", onNodeInput);
   dom.nodeBoard.addEventListener("change", onNodeInput);
   dom.nodeBoard.addEventListener("click", (event) => {
     const remove = event.target.closest("[data-remove-node]");
@@ -90,9 +90,10 @@ function bindEvents() {
   document.querySelectorAll("[data-tutorial-nudge]").forEach((button) => {
     button.addEventListener("click", () => applyTutorialNudge(button.dataset.tutorialNudge));
   });
-  window.addEventListener("resize", () => window.setTimeout(drawWires, 60));
-  initNodeDrag();
-}
+    window.addEventListener("resize", () => window.setTimeout(drawWires, 60));
+    initNodeDrag();
+    initBoardPan();
+  }
 
 function toggleSidebar() {
   document.querySelector(".app-shell").classList.toggle("sidebar-collapsed");
@@ -135,6 +136,45 @@ function initNodeDrag() {
   };
   dom.nodeBoard.addEventListener("pointerup", stopDrag);
   dom.nodeBoard.addEventListener("pointercancel", stopDrag);
+}
+
+function initBoardPan() {
+  const viewport = dom.nodeBoard.closest(".graph-wrap");
+  if (!viewport) return;
+  let panning = false;
+  let startX = 0, startY = 0, scrollLeft = 0, scrollTop = 0;
+
+  viewport.addEventListener("pointerdown", (event) => {
+    if (event.button !== 1) return;
+    panning = true;
+    startX = event.clientX;
+    startY = event.clientY;
+    scrollLeft = viewport.scrollLeft;
+    scrollTop = viewport.scrollTop;
+    viewport.classList.add("is-panning");
+    viewport.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+
+  viewport.addEventListener("pointermove", (event) => {
+    if (!panning) return;
+    viewport.scrollLeft = scrollLeft - (event.clientX - startX);
+    viewport.scrollTop = scrollTop - (event.clientY - startY);
+    event.preventDefault();
+  });
+
+  const stopPan = (event) => {
+    if (!panning) return;
+    panning = false;
+    viewport.classList.remove("is-panning");
+    if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
+  };
+
+  viewport.addEventListener("pointerup", stopPan);
+  viewport.addEventListener("pointercancel", stopPan);
+  viewport.addEventListener("auxclick", (event) => {
+    if (event.button === 1) event.preventDefault();
+  });
 }
 
 function expandBoard() {

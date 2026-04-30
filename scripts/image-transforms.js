@@ -3,9 +3,14 @@
 function applyColor(imageData, params) {
   const recipe = normalizeColor(params);
   const output = new ImageData(imageData.width, imageData.height);
+  const notice = { invalidExpressions: [], clampedPixels: 0, clampedChannels: 0 };
   const input = imageData.data;
   const out = output.data;
   if (recipe.mode === "equation") {
+    const validations = recipe.expressions.map(validateColorExpression);
+    notice.invalidExpressions = validations
+      .map((validation, index) => ({ ...validation, label: recipe.labels[index] || `Ch ${index + 1}`, index }))
+      .filter((validation) => !validation.ok);
     const evaluators = recipe.expressions.map(compileColorEquation);
     for (let i = 0, pixel = 0; i < input.length; i += 4, pixel += 1) {
       const r = input[i];
@@ -14,11 +19,17 @@ function applyColor(imageData, params) {
       const ctx = colorEquationContext(r, g, b, pixel, imageData.width, imageData.height, recipe.display);
       const values = evaluators.map((evaluate) => evaluate(ctx));
       const rgb = colorValuesToRgb(values, recipe.display);
+      const clampedChannels = [rgb.r, rgb.g, rgb.b].filter((value) => value < 0 || value > 255).length;
+      if (clampedChannels) {
+        notice.clampedPixels += 1;
+        notice.clampedChannels += clampedChannels;
+      }
       out[i] = clampByte(rgb.r);
       out[i + 1] = clampByte(rgb.g);
       out[i + 2] = clampByte(rgb.b);
       out[i + 3] = 255;
     }
+    output.colorNotice = notice;
     return output;
   }
   const [ch0, ch1, ch2] = recipe.channels;
@@ -50,8 +61,14 @@ function applyColor(imageData, params) {
       g = Math.round(g / step) * step;
       b = Math.round(b / step) * step;
     }
+    const clampedChannels = [r, g, b].filter((value) => value < 0 || value > 255).length;
+    if (clampedChannels) {
+      notice.clampedPixels += 1;
+      notice.clampedChannels += clampedChannels;
+    }
     out[i] = clampByte(r); out[i + 1] = clampByte(g); out[i + 2] = clampByte(b); out[i + 3] = 255;
   }
+  output.colorNotice = notice;
   return output;
 }
 

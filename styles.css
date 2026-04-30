@@ -709,6 +709,16 @@ canvas {
   background-size: 24px 24px;
 }
 
+.graph-wrap.is-panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.graph-wrap.is-panning .node-board,
+.graph-wrap.is-panning .node-card {
+  cursor: grabbing;
+}
+
 .wire-layer {
   position: absolute;
   inset: 0;
@@ -833,6 +843,119 @@ canvas {
 
 .node-grid.equations {
   grid-template-columns: 1fr;
+}
+
+.color-notices {
+  display: grid;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+.color-notice {
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.color-notice strong {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.color-notice p {
+  margin: 5px 0 0;
+  color: var(--ink);
+}
+
+.color-notice.error {
+  background: #ffe5e2;
+  border-color: #d92323;
+}
+
+.color-notice.warning {
+  background: #fff0b8;
+  border-color: #b88900;
+}
+
+.info-dot {
+  position: relative;
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--ink);
+  cursor: help;
+  font-weight: 900;
+  box-shadow: 2px 2px 0 rgba(31, 37, 40, 0.18);
+  outline: none;
+}
+
+.info-dot::after {
+  position: absolute;
+  right: -8px;
+  bottom: calc(100% + 10px);
+  z-index: 30;
+  width: min(240px, 72vw);
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  background: var(--sidebar);
+  box-shadow: 4px 4px 0 rgba(31, 37, 40, 0.22);
+  color: #fffaf0;
+  content: attr(data-tooltip);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  opacity: 0;
+  padding: 9px 10px;
+  pointer-events: none;
+  text-transform: none;
+  transform: translateY(4px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.info-dot::before {
+  position: absolute;
+  right: 2px;
+  bottom: calc(100% + 3px);
+  z-index: 31;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: var(--sidebar);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform: rotate(45deg) translateY(4px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.info-dot:hover,
+.info-dot:focus-visible {
+  border-color: #9c0c17;
+  box-shadow: 0 0 0 3px rgba(217, 35, 35, 0.16), 2px 2px 0 rgba(31, 37, 40, 0.18);
+}
+
+.info-dot:hover::after,
+.info-dot:focus-visible::after,
+.info-dot:hover::before,
+.info-dot:focus-visible::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.info-dot:hover::before,
+.info-dot:focus-visible::before {
+  transform: rotate(45deg) translateY(0);
 }
 
 .kernel-mini {

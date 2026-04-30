@@ -58,30 +58,60 @@ function cleanEquation(value) {
   return text ? text.slice(0, 90) : "0";
 }
 
-function compileColorEquation(expression) {
+function colorExpressionHelpText() {
+  return "Use numbers, r, g, b, avg, luma, x, y, w, h, min(), max(), abs(), clamp(), mix(), sqrt(), sin(), cos(), atan2(), pi, and arithmetic like + - * / ().";
+}
+
+function validateColorExpression(expression) {
   const source = cleanEquation(expression);
-  const allowed = /^[0-9a-zA-Z_+\-*/%().,\s?:<>=!]+$/.test(source);
+  const allowedCharacters = /^[0-9a-zA-Z_+\-*/%().,\s?:<>=!]+$/.test(source);
   const names = source.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
-  const allowedNames = new Set(["r", "g", "b", "x", "y", "w", "h", "avg", "luma", "Gray", "gray", "C", "M", "Y", "K", "H", "S", "V", "I", "c", "m", "k", "s", "v", "i", "min", "max", "abs", "clamp", "mix", "sqrt", "atan2", "sin", "cos", "pi"]);
-  if (!allowed || names.some((name) => !allowedNames.has(name))) return () => 0;
+  const allowedNames = colorExpressionNames();
+  const invalidNames = [...new Set(names.filter((name) => !allowedNames.has(name)))];
+  if (!allowedCharacters) {
+    return { ok: false, source, reason: "Only math operators, numbers, channel names, and supported helper functions are allowed." };
+  }
+  if (invalidNames.length) {
+    return { ok: false, source, reason: `Unknown name${invalidNames.length > 1 ? "s" : ""}: ${invalidNames.join(", ")}.` };
+  }
   try {
-    const fn = new Function("ctx", `
-      "use strict";
-      const { r, g, b, x, y, w, h, avg, luma, Gray, C, M, Y, K, H, S, V, I } = ctx;
-      const gray = Gray;
-      const c = C, m = M, k = K, s = S, v = V, i = I;
-      const min = Math.min;
-      const max = Math.max;
-      const abs = Math.abs;
-      const sqrt = Math.sqrt;
-      const atan2 = Math.atan2;
-      const sin = Math.sin;
-      const cos = Math.cos;
-      const pi = Math.PI;
-      const clamp = (value, low = 0, high = 255) => Math.max(low, Math.min(high, value));
-      const mix = (a, b, t) => a * (1 - t) + b * t;
-      return (${source});
-    `);
+    // eslint-disable-next-line no-new-func
+    new Function("ctx", colorEquationBody(source));
+    return { ok: true, source, reason: "" };
+  } catch {
+    return { ok: false, source, reason: "The expression is not valid JavaScript math." };
+  }
+}
+
+function colorExpressionNames() {
+  return new Set(["r", "g", "b", "x", "y", "w", "h", "avg", "luma", "Gray", "gray", "C", "M", "Y", "K", "H", "S", "V", "I", "c", "m", "k", "s", "v", "i", "min", "max", "abs", "clamp", "mix", "sqrt", "atan2", "sin", "cos", "pi"]);
+}
+
+function colorEquationBody(source) {
+  return `
+    "use strict";
+    const { r, g, b, x, y, w, h, avg, luma, Gray, C, M, Y, K, H, S, V, I } = ctx;
+    const gray = Gray;
+    const c = C, m = M, k = K, s = S, v = V, i = I;
+    const min = Math.min;
+    const max = Math.max;
+    const abs = Math.abs;
+    const sqrt = Math.sqrt;
+    const atan2 = Math.atan2;
+    const sin = Math.sin;
+    const cos = Math.cos;
+    const pi = Math.PI;
+    const clamp = (value, low = 0, high = 255) => Math.max(low, Math.min(high, value));
+    const mix = (a, b, t) => a * (1 - t) + b * t;
+    return (${source});
+  `;
+}
+
+function compileColorEquation(expression) {
+  const validation = validateColorExpression(expression);
+  if (!validation.ok) return () => 0;
+  try {
+    const fn = new Function("ctx", colorEquationBody(validation.source));
     return (ctx) => {
       try {
         const value = Number(fn(ctx));
