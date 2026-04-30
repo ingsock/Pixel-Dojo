@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image Dojo</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffcf4a'/%3E%3Cpath d='M7 18c5-9 14-9 18 0M8 20h16M11 13l10 10M21 13 11 23' stroke='%23212121' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js?v=story-images-dialogue-20260430"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="dojo-sidebar" aria-label="Image Dojo navigation">
+        <div class="sidebar-top-row">
+          <div class="brand-mark">
+            <div class="brand-badge" aria-hidden="true">ID</div>
+            <div>
+              <h1>Image Dojo</h1>
+              <p>Pipeline kung fu for pixels</p>
+            </div>
+          </div>
+          <button id="sidebarToggle" class="sidebar-toggle" type="button" title="Collapse sidebar" aria-label="Toggle sidebar">◀</button>
+        </div>
+
+        <div class="sidebar-body">
+          <div class="mode-tabs" role="tablist" aria-label="Mode">
+            <button class="mode-tab" type="button" data-mode="story" aria-selected="true">Story</button>
+            <button class="mode-tab" type="button" data-mode="random" aria-selected="false">Random</button>
+            <button class="mode-tab" type="button" data-mode="sandbox" aria-selected="false">Sandbox</button>
+          </div>
+
+          <section class="side-section story-only" aria-label="Story chapters">
+            <div class="section-title">
+              <span>Story Scroll</span>
+              <strong id="chapterProgress">0/0</strong>
+            </div>
+            <div id="chapterList" class="chapter-list"></div>
+          </section>
+
+          <section class="side-section" aria-label="Unlocked recommendations">
+            <div class="section-title">
+              <span>Unlocked Recs</span>
+              <strong id="unlockCount">0</strong>
+            </div>
+            <div id="unlockList" class="unlock-list"></div>
+          </section>
+
+          <section class="side-section compact-section" aria-label="Leaderboard">
+            <div class="section-title">
+              <span>Local Runs</span>
+              <strong id="runCount">0</strong>
+            </div>
+            <ol id="leaderboardList" class="leaderboard-list"></ol>
+          </section>
+        </div>
+      </aside>
+
+      <main class="dojo-stage">
+        <header class="hud-bar">
+          <div class="hud-title">
+            <p id="beltLabel" class="eyebrow">Story Mode</p>
+            <h2 id="puzzleTitle">Loading</h2>
+            <p id="puzzleTagline" class="tagline">Preparing the mats</p>
+          </div>
+
+          <div class="hud-stats" aria-label="Run stats">
+            <div>
+              <span>Score</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div>
+              <span>Streak</span>
+              <strong id="streakValue">0</strong>
+            </div>
+            <div>
+              <span>Best</span>
+              <strong id="bestValue">0</strong>
+            </div>
+          </div>
+
+          <div class="hud-actions">
+            <button id="audioButton" class="icon-button" type="button" title="Toggle audio" aria-label="Toggle audio">Audio</button>
+            <button id="devButton" class="icon-button" type="button" title="Developer unlock" aria-label="Developer unlock">Dev</button>
+            <button id="resetButton" class="icon-button" type="button" title="Reset graph" aria-label="Reset graph">Reset</button>
+            <button id="newRandomButton" class="icon-button primary random-only is-hidden" type="button">New Random</button>
+          </div>
+        </header>
+
+        <section class="mentor-row" aria-label="Dojo master guidance">
+          <div class="mentor-card">
+            <img class="mentor-svg" src="assets/dojo_master.svg" alt="Animated dojo master">
+          </div>
+          <div class="mentor-dialogue">
+            <div class="dialogue-head">
+              <strong>Dojo Master Bitshan</strong>
+              <span id="dialogueStep">0/0</span>
+            </div>
+            <p id="masterText">...</p>
+            <div class="dialogue-actions">
+              <button id="prevLineButton" class="tiny-button" type="button">Back</button>
+              <button id="hintButton" class="tiny-button" type="button">Hint</button>
+              <button id="nextLineButton" class="tiny-button primary" type="button">Next Line</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="arena-grid" aria-label="Image arena">
+          <div class="canvas-block">
+            <div class="canvas-head">
+              <span>Input</span>
+              <strong id="sourceName">Source</strong>
+            </div>
+            <canvas id="inputCanvas" width="192" height="192"></canvas>
+          </div>
+
+          <div class="canvas-block target-block">
+            <div class="canvas-head">
+              <span>Target</span>
+              <strong id="targetName">Mystery</strong>
+            </div>
+            <canvas id="targetCanvas" width="192" height="192"></canvas>
+          </div>
+
+          <div class="canvas-block output-block">
+            <div class="canvas-head">
+              <span>Your Output</span>
+              <strong id="matchLabel">Disconnected</strong>
+            </div>
+            <canvas id="outputCanvas" width="192" height="192"></canvas>
+          </div>
+        </section>
+
+        <section class="workbench">
+          <section class="tool-panel tool-belt" aria-label="Tool belt">
+            <div class="panel-head">
+              <h3>Tool Belt</h3>
+              <button class="tool-button primary" type="button" data-action="score">Score Run</button>
+            </div>
+
+            <div class="toolbox-grid" aria-label="Add tools">
+              <button class="tool-button" type="button" data-add-node="color">Color</button>
+              <button class="tool-button" type="button" data-add-node="affine">Affine</button>
+              <button class="tool-button" type="button" data-add-node="kernel">Kernel</button>
+              <button class="tool-button" type="button" data-add-node="split">Split</button>
+              <button class="tool-button" type="button" data-add-node="recombine">Recombine</button>
+            </div>
+
+            <details class="recommendation-panel" open>
+              <summary class="recommendation-toggle">
+                <span>Recommendations</span>
+                <small id="recommendationHint">Story starts with none.</small>
+              </summary>
+              <div id="recommendationList" class="recommendation-list"></div>
+            </details>
+
+            <div class="mode-tools">
+              <label class="field random-only is-hidden">
+                <span>Random Difficulty</span>
+                <select id="randomDifficulty">
+                  <option value="easy">Easy</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </label>
+              <label class="field sandbox-only is-hidden">
+                <span>Sandbox Source</span>
+                <select id="sandboxSourceSelect"></select>
+              </label>
+              <button class="tool-button sandbox-only is-hidden" type="button" data-action="capture-target">Capture Target</button>
+            </div>
+          </section>
+
+          <section class="tool-panel graph-panel" aria-label="Block editor">
+            <div class="panel-head">
+              <h3>Block Editor</h3>
+              <div class="panel-actions">
+                <button class="tiny-button" type="button" data-action="auto-wire">Auto Wire</button>
+                <button class="tiny-button" type="button" data-action="clear-nodes">Clear</button>
+              </div>
+            </div>
+
+            <div class="mini-previews" aria-label="Quick preview">
+              <div class="mini-preview-item">
+                <canvas id="miniInputCanvas" width="96" height="96"></canvas>
+                <span>Input</span>
+              </div>
+              <div class="mini-preview-item target-tint">
+                <canvas id="miniTargetCanvas" width="96" height="96"></canvas>
+                <span>Target</span>
+              </div>
+              <div class="mini-preview-item output-tint">
+                <canvas id="miniOutputCanvas" width="96" height="96"></canvas>
+                <span>Output</span>
+              </div>
+            </div>
+
+            <div class="graph-wrap">
+              <svg id="wireLayer" class="wire-layer" aria-hidden="true"></svg>
+              <div id="nodeBoard" class="node-board"></div>
+            </div>
+          </section>
+
+          <section class="tool-panel run-sheet" aria-label="Run sheet">
+            <div class="panel-head">
+              <h3>Run Sheet</h3>
+            </div>
+            <div class="score-card">
+              <span id="scoreGrade">Ready</span>
+              <strong id="scoreDetail">Connect Output</strong>
+              <p id="scoreBreakdown">The final Output node must be connected to score.</p>
+            </div>
+            <div class="recipe-box">
+              <div class="recipe-head">
+                <span>Graph JSON</span>
+                <div>
+                  <button class="tiny-button" type="button" data-action="export-graph">Export</button>
+                  <button class="tiny-button" type="button" data-action="import-graph">Import</button>
+                </div>
+              </div>
+              <textarea id="recipeText" spellcheck="false" aria-label="Graph JSON"></textarea>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <div id="burstLayer" class="burst-layer" aria-hidden="true"></div>
+    </div>
+  </body>
+</html>
