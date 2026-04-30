@@ -295,7 +295,8 @@ button:disabled {
 .dojo-stage {
   min-width: 0;
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  align-content: start;
   gap: 16px;
   padding: 18px;
 }
@@ -436,13 +437,92 @@ h3 {
   line-height: 1.5;
 }
 
+.tutorial-coach {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: #fff7df;
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+.tutorial-copy {
+  min-width: 0;
+}
+
+.tutorial-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tutorial-kicker span {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--yellow);
+  padding: 2px 9px;
+  color: var(--ink);
+}
+
+.tutorial-copy h3 {
+  font-size: 18px;
+}
+
+.tutorial-copy p {
+  max-width: 920px;
+  margin: 6px 0 0;
+  color: #30383c;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.tutorial-nudges,
+.tutorial-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.tutorial-highlight {
+  position: relative;
+  z-index: 12;
+  outline: 4px solid rgba(217, 35, 35, 0.96) !important;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 8px rgba(217, 35, 35, 0.2), 3px 3px 0 rgba(31, 37, 40, 0.17) !important;
+  animation: tutorial-pulse 950ms ease-in-out infinite alternate;
+}
+
+@keyframes tutorial-pulse {
+  from {
+    outline-color: rgba(217, 35, 35, 0.72);
+  }
+  to {
+    outline-color: rgba(156, 12, 23, 1);
+  }
+}
+
 .arena-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(180px, 1fr));
+  align-items: start;
   gap: 14px;
 }
 
 .canvas-block {
+  align-self: start;
   overflow: hidden;
   background: #ffffff;
 }
@@ -867,6 +947,19 @@ textarea {
   line-height: 1.4;
 }
 
+.next-level-button {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  background: var(--mint);
+  color: #ffffff;
+  padding: 8px 11px;
+  font-weight: 900;
+  box-shadow: 3px 3px 0 rgba(31, 37, 40, 0.17);
+}
+
 .recipe-box {
   min-height: 0;
   display: grid;
@@ -980,6 +1073,7 @@ textarea:focus {
   }
 
   .mentor-row,
+  .tutorial-coach,
   .arena-grid,
   .chapter-list,
   .hud-stats,
@@ -1004,7 +1098,9 @@ textarea:focus {
 
   .hud-actions,
   .dialogue-actions,
-  .panel-head {
+  .panel-head,
+  .tutorial-actions,
+  .tutorial-nudges {
     align-items: stretch;
     flex-direction: column;
   }

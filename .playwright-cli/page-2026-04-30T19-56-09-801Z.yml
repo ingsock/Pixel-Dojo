@@ -1,0 +1,230 @@
+- generic [ref=e2]:
+  - complementary "Image Dojo navigation" [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: ID
+        - generic [ref=e7]:
+          - heading "Image Dojo" [level=1] [ref=e8]
+          - paragraph [ref=e9]: Pipeline kung fu for pixels
+      - button "Toggle sidebar" [ref=e10] [cursor=pointer]: ◀
+    - generic [ref=e11]:
+      - tablist "Mode" [ref=e12]:
+        - button "Story" [ref=e13] [cursor=pointer]
+        - button "Random" [ref=e14] [cursor=pointer]
+        - button "Sandbox" [ref=e15] [cursor=pointer]
+      - region "Story chapters" [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Story Scroll
+          - strong [ref=e19]: 0/30
+        - generic [ref=e20]:
+          - button "The Red Gate Unlocked" [ref=e21] [cursor=pointer]:
+            - strong [ref=e22]: The Red Gate
+            - generic [ref=e23]: Unlocked
+          - button "The Green Lantern With No Lantern Locked" [disabled] [ref=e24]:
+            - strong [ref=e25]: The Green Lantern With No Lantern
+            - generic [ref=e26]: Locked
+          - button "Blue Soup, Cold Spoon Locked" [disabled] [ref=e27]:
+            - strong [ref=e28]: Blue Soup, Cold Spoon
+            - generic [ref=e29]: Locked
+          - button "The Mirror Trades Hats Locked" [disabled] [ref=e30]:
+            - strong [ref=e31]: The Mirror Trades Hats
+            - generic [ref=e32]: Locked
+          - button "The Three Bowls Agree Locked" [disabled] [ref=e33]:
+            - strong [ref=e34]: The Three Bowls Agree
+            - generic [ref=e35]: Locked
+          - button "The Eye's Uneven Scales Locked" [disabled] [ref=e36]:
+            - strong [ref=e37]: The Eye's Uneven Scales
+            - generic [ref=e38]: Locked
+          - button "The Negative Teacup Locked" [disabled] [ref=e39]:
+            - strong [ref=e40]: The Negative Teacup
+            - generic [ref=e41]: Locked
+          - button "Morning Adds Forty Locked" [disabled] [ref=e42]:
+            - strong [ref=e43]: Morning Adds Forty
+            - generic [ref=e44]: Locked
+          - button "The Dim Attic of Pixels Locked" [disabled] [ref=e45]:
+            - strong [ref=e46]: The Dim Attic of Pixels
+            - generic [ref=e47]: Locked
+          - button "Red Drum, Quiet Room Locked" [disabled] [ref=e48]:
+            - strong [ref=e49]: Red Drum, Quiet Room
+            - generic [ref=e50]: Locked
+          - button "The Cyan Window Locked" [disabled] [ref=e51]:
+            - strong [ref=e52]: The Cyan Window
+            - generic [ref=e53]: Locked
+          - button "Magenta Without Ceremony Locked" [disabled] [ref=e54]:
+            - strong [ref=e55]: Magenta Without Ceremony
+            - generic [ref=e56]: Locked
+          - button "Yellow Makes a Small Speech Locked" [disabled] [ref=e57]:
+            - strong [ref=e58]: Yellow Makes a Small Speech
+            - generic [ref=e59]: Locked
+          - button "The Contrast Bellows Locked" [disabled] [ref=e60]:
+            - strong [ref=e61]: The Contrast Bellows
+            - generic [ref=e62]: Locked
+          - button "The Fog Remembers 128 Locked" [disabled] [ref=e63]:
+            - strong [ref=e64]: The Fog Remembers 128
+            - generic [ref=e65]: Locked
+          - button "The Hard-Light Almond Locked" [disabled] [ref=e66]:
+            - strong [ref=e67]: The Hard-Light Almond
+            - generic [ref=e68]: Locked
+          - button "The Maximum Gong Locked" [disabled] [ref=e69]:
+            - strong [ref=e70]: The Maximum Gong
+            - generic [ref=e71]: Locked
+          - button "The Minimum Whisper Locked" [disabled] [ref=e72]:
+            - strong [ref=e73]: The Minimum Whisper
+            - generic [ref=e74]: Locked
+          - button "Sepia Borrows a Coat Locked" [disabled] [ref=e75]:
+            - strong [ref=e76]: Sepia Borrows a Coat
+            - generic [ref=e77]: Locked
+          - button "The Color Difference Scroll Locked" [disabled] [ref=e78]:
+            - strong [ref=e79]: The Color Difference Scroll
+            - generic [ref=e80]: Locked
+          - button "The Half-Lit Value Shrine Locked" [disabled] [ref=e81]:
+            - strong [ref=e82]: The Half-Lit Value Shrine
+            - generic [ref=e83]: Locked
+          - button "The Hue Wheel Sneezes Locked" [disabled] [ref=e84]:
+            - strong [ref=e85]: The Hue Wheel Sneezes
+            - generic [ref=e86]: Locked
+          - button "The Saturation Monastery Locked" [disabled] [ref=e87]:
+            - strong [ref=e88]: The Saturation Monastery
+            - generic [ref=e89]: Locked
+          - button "The Intensity Stair Locked" [disabled] [ref=e90]:
+            - strong [ref=e91]: The Intensity Stair
+            - generic [ref=e92]: Locked
+          - button "Cyan Ink in the Rain Barrel Locked" [disabled] [ref=e93]:
+            - strong [ref=e94]: Cyan Ink in the Rain Barrel
+            - generic [ref=e95]: Locked
+          - button "The Key Plate Descends Locked" [disabled] [ref=e96]:
+            - strong [ref=e97]: The Key Plate Descends
+            - generic [ref=e98]: Locked
+          - button "Overripe Lantern, Sharpened by Math Locked" [disabled] [ref=e99]:
+            - strong [ref=e100]: Overripe Lantern, Sharpened by Math
+            - generic [ref=e101]: Locked
+          - button "The Warm Stone After Rain Locked" [disabled] [ref=e102]:
+            - strong [ref=e103]: The Warm Stone After Rain
+            - generic [ref=e104]: Locked
+          - button "The Ink Then Moon Trick Locked" [disabled] [ref=e105]:
+            - strong [ref=e106]: The Ink Then Moon Trick
+            - generic [ref=e107]: Locked
+          - button "Three Masks Before Breakfast Locked" [disabled] [ref=e108]:
+            - strong [ref=e109]: Three Masks Before Breakfast
+            - generic [ref=e110]: Locked
+      - region "Unlocked recommendations" [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e113]: Unlocked Recs
+          - strong [ref=e114]: "0"
+        - paragraph [ref=e116]: No recommendations yet.
+      - region "Leaderboard" [ref=e117]:
+        - generic [ref=e118]:
+          - generic [ref=e119]: Local Runs
+          - strong [ref=e120]: "0"
+        - list [ref=e121]:
+          - listitem [ref=e122]: No saved runs yet.
+  - main [ref=e123]:
+    - generic [ref=e124]:
+      - generic [ref=e125]:
+        - paragraph [ref=e126]: Colors 1/30
+        - heading "The Red Gate" [level=2] [ref=e127]
+        - paragraph [ref=e128]: Color equations from basic RGB.
+      - generic "Run stats" [ref=e129]:
+        - generic [ref=e130]:
+          - generic [ref=e131]: Score
+          - strong [ref=e132]: "0"
+        - generic [ref=e133]:
+          - generic [ref=e134]: Streak
+          - strong [ref=e135]: "0"
+        - generic [ref=e136]:
+          - generic [ref=e137]: Best
+          - strong [ref=e138]: "0"
+      - generic [ref=e139]:
+        - button "Toggle audio" [ref=e140] [cursor=pointer]: Audio
+        - button "Developer unlock" [ref=e141] [cursor=pointer]: Dev
+        - button "Reset graph" [ref=e142] [cursor=pointer]: Reset
+    - region "Dojo master guidance" [ref=e143]:
+      - img "Animated dojo master" [ref=e145]
+      - generic [ref=e146]:
+        - generic [ref=e147]:
+          - strong [ref=e148]: Dojo Master Bitshan
+          - generic [ref=e149]: 1/3
+        - paragraph [ref=e150]: "You climb to the mountain dojo. Master Bitshan looks at the image, then at you: To understand what you are, you must understand what you see."
+        - generic [ref=e151]:
+          - button "Back" [ref=e152] [cursor=pointer]
+          - button "Hint 1" [ref=e153] [cursor=pointer]
+          - button "Next Line" [ref=e154] [cursor=pointer]
+    - region "First lesson tutorial" [ref=e155]:
+      - generic [ref=e156]:
+        - generic [ref=e157]:
+          - generic [ref=e158]: Step 1/6
+          - strong [ref=e159]: See the goal
+        - heading "Compare input, target, and output" [level=3] [ref=e160]
+        - paragraph [ref=e161]: Screens build color from red, green, and blue light. Each channel is a number from 0 off to 255 full brightness. This first target keeps red and turns green and blue off.
+      - generic [ref=e162]:
+        - button "Back" [disabled] [ref=e163]
+        - button "Show Images" [ref=e164] [cursor=pointer]
+        - button "Next" [ref=e165] [cursor=pointer]
+    - region "Image arena" [ref=e166]:
+      - generic [ref=e168]:
+        - generic [ref=e169]: Input
+        - strong [ref=e170]: Openverse 026 - Red Flowering Currant 1835
+      - generic [ref=e173]:
+        - generic [ref=e174]: Target
+        - strong [ref=e175]: Lesson Target
+      - generic [ref=e178]:
+        - generic [ref=e179]: Your Output
+        - strong [ref=e180]: Disconnected
+    - generic [ref=e182]:
+      - region "Tool belt" [ref=e183]:
+        - generic [ref=e184]:
+          - heading "Tool Belt" [level=3] [ref=e185]
+          - button "Score Run" [ref=e186] [cursor=pointer]
+        - generic "Add tools" [ref=e187]:
+          - button "Color" [ref=e188] [cursor=pointer]
+          - button "Affine" [disabled] [ref=e189]
+          - button "Kernel" [disabled] [ref=e190]
+          - button "Split" [disabled] [ref=e191]
+          - button "Recombine" [disabled] [ref=e192]
+        - group [ref=e193]:
+          - generic "▶ Recommendations No shortcuts in this chapter." [ref=e194] [cursor=pointer]:
+            - text: ▶
+            - generic [ref=e195]: Recommendations
+            - generic [ref=e196]: No shortcuts in this chapter.
+          - paragraph [ref=e198]: Discoveries stay in your head, not on a preset shelf.
+      - region "Block editor" [ref=e199]:
+        - generic [ref=e200]:
+          - heading "Block Editor" [level=3] [ref=e201]
+          - generic [ref=e202]:
+            - button "Auto Wire" [ref=e203] [cursor=pointer]
+            - button "Clear" [ref=e204] [cursor=pointer]
+        - generic "Quick preview" [ref=e205]:
+          - generic [ref=e208]: Input
+          - generic [ref=e211]: Target
+          - generic [ref=e214]: Output
+        - generic [ref=e215]:
+          - img
+          - generic [ref=e216]:
+            - article [ref=e217]:
+              - generic [ref=e218]:
+                - strong [ref=e219]: Input
+                - generic [ref=e220]: source
+              - paragraph [ref=e221]: The starting image stream.
+            - article [ref=e222]:
+              - generic [ref=e223]:
+                - strong [ref=e224]: Output
+                - generic [ref=e225]: required
+              - generic [ref=e226]:
+                - generic [ref=e227]: From
+                - combobox "From" [ref=e228]:
+                  - option "Not connected" [selected]
+                  - option "Input"
+              - paragraph [ref=e229]: Connect this node to score.
+      - region "Run sheet" [ref=e230]:
+        - heading "Run Sheet" [level=3] [ref=e232]
+        - generic [ref=e233]:
+          - generic [ref=e234]: Graph
+          - strong [ref=e235]: Output disconnected
+          - paragraph [ref=e236]: Connect every required input, then connect Output.
+        - generic [ref=e237]:
+          - generic [ref=e238]:
+            - generic [ref=e239]: Graph JSON
+            - generic [ref=e240]:
+              - button "Export" [ref=e241] [cursor=pointer]
+              - button "Import" [ref=e242] [cursor=pointer]
+          - textbox "Graph JSON" [ref=e243]: "{ \"nodes\": [], \"outputSource\": \"\" }"

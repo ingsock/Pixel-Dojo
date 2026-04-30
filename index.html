@@ -6,7 +6,18 @@
     <title>Image Dojo</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffcf4a'/%3E%3Cpath d='M7 18c5-9 14-9 18 0M8 20h16M11 13l10 10M21 13 11 23' stroke='%23212121' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="styles.css">
-    <script defer src="app.js?v=story-images-dialogue-20260430"></script>
+    <script defer src="scripts/utilities.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/color-models.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/canvas-audio-effects.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/image-sources.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/image-transforms.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/scoring.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/puzzle-logic.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/story-chapters.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/graph-editor.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/actions.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/ui.js?v=ux-refactor-20260430"></script>
+    <script defer src="scripts/config.js?v=ux-refactor-20260430"></script>
   </head>
   <body>
     <div class="app-shell">
@@ -101,6 +112,27 @@
               <button id="hintButton" class="tiny-button" type="button">Hint</button>
               <button id="nextLineButton" class="tiny-button primary" type="button">Next Line</button>
             </div>
+          </div>
+        </section>
+
+        <section id="tutorialCoach" class="tutorial-coach story-only is-hidden" aria-label="First lesson tutorial">
+          <div class="tutorial-copy">
+            <div class="tutorial-kicker">
+              <span id="tutorialStepLabel">Tutorial</span>
+              <strong id="tutorialTargetLabel">First level</strong>
+            </div>
+            <h3 id="tutorialTitle">Learn the dojo</h3>
+            <p id="tutorialText">Follow the highlighted control.</p>
+          </div>
+          <div class="tutorial-nudges" aria-label="Try color number changes">
+            <button class="tiny-button" type="button" data-tutorial-nudge="brighter">R +35</button>
+            <button class="tiny-button" type="button" data-tutorial-nudge="darker">R x0.65</button>
+            <button class="tiny-button" type="button" data-tutorial-nudge="reset">Red only</button>
+          </div>
+          <div class="tutorial-actions">
+            <button id="tutorialBackButton" class="tiny-button" type="button">Back</button>
+            <button id="tutorialActionButton" class="tiny-button primary" type="button">Do Step</button>
+            <button id="tutorialNextButton" class="tiny-button" type="button">Next</button>
           </div>
         </section>
 
@@ -208,6 +240,7 @@
               <span id="scoreGrade">Ready</span>
               <strong id="scoreDetail">Connect Output</strong>
               <p id="scoreBreakdown">The final Output node must be connected to score.</p>
+              <button id="nextLevelButton" class="next-level-button is-hidden" type="button">Next Level</button>
             </div>
             <div class="recipe-box">
               <div class="recipe-head">
