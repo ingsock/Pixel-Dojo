@@ -177,11 +177,34 @@ function normalizeAffine(params = {}) {
   };
 }
 
+function normalizeKernelSize(value) {
+  const size = clamp(Math.round(Number(value ?? 3)), 1, 9);
+  return size % 2 === 0 ? size + 1 : size;
+}
+
+function createKernelValues(size, sourceValues = null) {
+  const normalizedSize = normalizeKernelSize(size);
+  const center = Math.floor(normalizedSize / 2);
+  const values = Array.from({ length: normalizedSize }, (_, y) => Array.from({ length: normalizedSize }, (_, x) => (x === center && y === center ? 1 : 0)));
+  if (!Array.isArray(sourceValues) || !sourceValues.length) return values;
+  const sourceSize = sourceValues.length;
+  const copySize = Math.min(normalizedSize, sourceSize);
+  const sourceOffset = Math.max(0, Math.floor((sourceSize - copySize) / 2));
+  const targetOffset = Math.max(0, Math.floor((normalizedSize - copySize) / 2));
+  for (let y = 0; y < copySize; y += 1) {
+    const sourceRow = Array.isArray(sourceValues[sourceOffset + y]) ? sourceValues[sourceOffset + y] : [];
+    for (let x = 0; x < copySize; x += 1) {
+      values[targetOffset + y][targetOffset + x] = clamp(Number(sourceRow[sourceOffset + x] ?? values[targetOffset + y][targetOffset + x]), -20, 20);
+    }
+  }
+  return values;
+}
+
 function normalizeKernel(params = {}) {
   params = params && typeof params === "object" ? params : {};
-  const values = clone(KERNEL_PRESETS.identity.values);
-  if (Array.isArray(params.values)) for (let y = 0; y < 3; y += 1) for (let x = 0; x < 3; x += 1) values[y][x] = clamp(Number(params.values?.[y]?.[x] ?? values[y][x]), -20, 20);
-  return { values, normalize: Boolean(params.normalize), scale: clamp(Number(params.scale ?? 1), -10, 10), bias: clamp(Number(params.bias ?? 0), -255, 255) };
+  const size = normalizeKernelSize(params.size ?? params.values?.length ?? 3);
+  const values = createKernelValues(size, Array.isArray(params.values) ? params.values : null);
+  return { size, values, normalize: Boolean(params.normalize), scale: clamp(Number(params.scale ?? 1), -10, 10), bias: clamp(Number(params.bias ?? 0), -255, 255) };
 }
 
 function kernelParams(id) {

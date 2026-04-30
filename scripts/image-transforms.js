@@ -102,13 +102,14 @@ function applyKernel(imageData, params) {
   const output = new ImageData(imageData.width, imageData.height);
   const input = imageData.data;
   const out = output.data;
+  const radius = Math.floor(kernel.size / 2);
   for (let y = 0; y < imageData.height; y += 1) {
     for (let x = 0; x < imageData.width; x += 1) {
       let r = 0, g = 0, b = 0;
-      for (let ky = 0; ky < 3; ky += 1) {
-        for (let kx = 0; kx < 3; kx += 1) {
-          const sx = clamp(x + kx - 1, 0, imageData.width - 1);
-          const sy = clamp(y + ky - 1, 0, imageData.height - 1);
+      for (let ky = 0; ky < kernel.size; ky += 1) {
+        for (let kx = 0; kx < kernel.size; kx += 1) {
+          const sx = clamp(x + kx - radius, 0, imageData.width - 1);
+          const sy = clamp(y + ky - radius, 0, imageData.height - 1);
           const index = (sy * imageData.width + sx) * 4;
           const weight = values[ky][kx] * kernel.scale;
           r += input[index] * weight; g += input[index + 1] * weight; b += input[index + 2] * weight;

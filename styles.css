@@ -752,7 +752,7 @@ canvas {
 }
 
 .node-card.kernel-node {
-  width: 240px;
+  width: calc(118px + (var(--kernel-size, 3) * 44px));
 }
 
 .node-card.color-node {
@@ -960,7 +960,7 @@ canvas {
 
 .kernel-mini {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--kernel-size, 3), minmax(0, 1fr));
   gap: 5px;
   margin-top: 8px;
 }
@@ -1034,7 +1034,7 @@ textarea {
   text-transform: uppercase;
 }
 
-.kernel-node .node-grid.three {
+.kernel-node .kernel-controls {
   grid-template-columns: auto 1fr 1fr;
 }
 

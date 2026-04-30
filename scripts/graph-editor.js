@@ -41,7 +41,8 @@ function onNodeInput(event) {
   const target = event.target;
   if (!target.closest("[data-node-id]") && target.dataset.outputSelect !== "true") return;
   readGraphFromDom();
-  renderAll(false, { deferColorNotices: event.type === "input" && target.matches("[data-equation-index]") });
+  const rebuild = target.matches("[data-param='size']");
+  renderAll(!rebuild ? false : true, { deferColorNotices: event.type === "input" && target.matches("[data-equation-index]") });
   if (event.type === "change") playSound("wire");
 }
 
@@ -90,11 +91,14 @@ function readGraphFromDom() {
       });
     }
     if (node.type === "kernel") {
-      const values = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-      card.querySelectorAll("[data-kx]").forEach((input) => {
+      const kernelInputs = [...card.querySelectorAll("[data-kx]")];
+      const kernelSize = kernelInputs.length ? Math.max(...kernelInputs.map((input) => Math.max(Number(input.dataset.kx), Number(input.dataset.ky)))) + 1 : 3;
+      const values = Array.from({ length: kernelSize }, () => Array.from({ length: kernelSize }, () => 0));
+      kernelInputs.forEach((input) => {
         values[Number(input.dataset.ky)][Number(input.dataset.kx)] = Number(input.value);
       });
       node.params = normalizeKernel({
+        size: Number(card.querySelector("[data-param='size']").value),
         values,
         normalize: card.querySelector("[data-param='normalize']").checked,
         scale: Number(card.querySelector("[data-param='scale']").value),
@@ -242,6 +246,7 @@ function nodeCard(node, index) {
   const card = document.createElement("article");
   card.className = `node-card ${node.type}-node`;
   card.dataset.nodeId = node.id;
+  if (node.type === "kernel") card.style.setProperty("--kernel-size", String(normalizeKernel(node.params).size));
   card.innerHTML = nodeMarkup(node, index);
   return card;
 }
@@ -270,10 +275,12 @@ function nodeMarkup(node, index) {
   }
   if (node.type === "kernel") {
     const p = normalizeKernel(node.params);
+    const sizes = [...new Set([3, 5, 7, p.size])].sort((a, b) => a - b);
     return `${head}
       <label class="field mini"><span>Input</span>${sourceSelect(node.id, node.input || "input", "data-param='input'")}</label>
       <div class="kernel-mini">${p.values.map((row, y) => row.map((value, x) => `<input data-kx="${x}" data-ky="${y}" type="number" step="0.01" value="${formatNumber(value, 2)}">`).join("")).join("")}</div>
-      <div class="node-grid three">
+      <div class="node-grid kernel-controls">
+        <label class="field mini"><span>Size</span><select data-param="size">${sizes.map((size) => `<option value="${size}" ${size === p.size ? "selected" : ""}>${size}x${size}</option>`).join("")}</select></label>
         <label class="check-field mini-check"><input data-param="normalize" type="checkbox" ${p.normalize ? "checked" : ""}><span>Norm</span></label>
         <label class="field mini"><span>Scale</span><input data-param="scale" type="number" step="0.01" value="${formatNumber(p.scale, 2)}"></label>
         <label class="field mini"><span>Bias</span><input data-param="bias" type="number" step="1" value="${formatNumber(p.bias, 1)}"></label>
