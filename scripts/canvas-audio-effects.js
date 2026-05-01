@@ -5,7 +5,10 @@ function options(list, selected) {
 }
 
 function chapterLinesTag(chapter) {
-  return chapter.tools.includes("recombine") ? "Learn to branch and recombine streams." : "Color equations from basic RGB.";
+  if (chapter.tools.includes("recombine")) return "Learn to branch and recombine streams.";
+  if (chapter.tools.includes("kernel") && !chapter.tools.includes("color") && !chapter.tools.includes("affine")) return "Kernel convolution: blur, sharpen, edges, emboss.";
+  if (chapter.tools.includes("affine") && !chapter.tools.includes("color")) return "Affine matrix transforms: translate, rotate, scale, shear.";
+  return "Color equations from basic RGB.";
 }
 
 function randomTitle(difficulty) {

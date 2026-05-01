@@ -391,7 +391,7 @@ function makeColorChapter() {
     ],
   ];
 
-  return lessons.map((lesson, index) => ({
+  const colorChapters = lessons.map((lesson, index) => ({
     title: lesson.title,
     belt: `Colors ${index + 1}/30`,
     source: lesson.source,
@@ -407,6 +407,343 @@ function makeColorChapter() {
       : masterLines[index],
     hints: makeCrypticHints(lesson, index),
   }));
+
+  const affineLessons = [
+    {
+      title: "Right Step on Stone",
+      source: "openverse_013",
+      steps: [{ params: { a: 1, b: 0, c: 0, d: 1, e: 18, f: 0 } }],
+      goal: "Translate the image to the right using the affine matrix.",
+      explore: "In this matrix, e and f are translation offsets in x and y.",
+    },
+    {
+      title: "Left Step Through Mist",
+      source: "openverse_018",
+      steps: [{ params: { a: 1, b: 0, c: 0, d: 1, e: -18, f: 0 } }],
+      goal: "Translate the image to the left.",
+      explore: "Negative e moves the sampling center left.",
+    },
+    {
+      title: "Climb the Bamboo Stair",
+      source: "openverse_020",
+      steps: [{ params: { a: 1, b: 0, c: 0, d: 1, e: 0, f: -16 } }],
+      goal: "Shift the image upward using f.",
+      explore: "Translation can move x and y independently.",
+    },
+    {
+      title: "Descend to Lantern Alley",
+      source: "openverse_021",
+      steps: [{ params: { a: 1, b: 0, c: 0, d: 1, e: 0, f: 16 } }],
+      goal: "Shift the image downward.",
+      explore: "Positive f moves the frame down.",
+    },
+    {
+      title: "Twelve Degrees Left",
+      source: "openverse_024",
+      steps: [{ params: rotateAffine(-12) }],
+      goal: "Rotate the image slightly counterclockwise.",
+      explore: "Rotation fills a, b, c, and d with sine and cosine.",
+    },
+    {
+      title: "Rotate Then Step",
+      source: "openverse_033",
+      steps: [
+        { params: rotateAffine(12) },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 18, f: 0 } },
+      ],
+      goal: "Chain two affine nodes: rotate first, then translate.",
+      explore: "Order matters; matrix-like transforms are not commutative in pipelines.",
+    },
+    {
+      title: "Step Then Rotate",
+      source: "openverse_034",
+      steps: [
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 18, f: 0 } },
+        { params: rotateAffine(12) },
+      ],
+      goal: "Chain affine nodes in the opposite order.",
+      explore: "Applying the same transforms in a different order gives a different target.",
+    },
+    {
+      title: "Shear Then Climb",
+      source: "openverse_038",
+      steps: [
+        { params: { a: 1, b: 0, c: 0.22, d: 1, e: 0, f: 0 } },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 0, f: -16 } },
+      ],
+      goal: "Apply shear before vertical translation.",
+      explore: "Changing skew first produces a different alignment than moving first.",
+    },
+    {
+      title: "Climb Then Shear",
+      source: "openverse_030",
+      steps: [
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 0, f: -16 } },
+        { params: { a: 1, b: 0, c: 0.22, d: 1, e: 0, f: 0 } },
+      ],
+      goal: "Apply vertical translation before shear.",
+      explore: "The same two operations in reverse order should no longer match lesson 8.",
+    },
+    {
+      title: "Mirror Then Drift",
+      source: "openverse_037",
+      steps: [
+        { params: { a: -1, b: 0, c: 0, d: 1, e: 0, f: 0 } },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 18, f: 0 } },
+      ],
+      goal: "Combine reflection with translation.",
+      explore: "Reflection changes orientation, then translation repositions the reflected frame.",
+    },
+    {
+      title: "Rotate, Shear, Drift",
+      source: "openverse_042",
+      steps: [
+        { params: rotateAffine(-12) },
+        { params: { a: 1, b: 0, c: 0.22, d: 1, e: 0, f: 0 } },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 0, f: 16 } },
+      ],
+      goal: "Solve a three-step affine pipeline with rotation, shear, and translation.",
+      explore: "Compound transforms stack orientation, skew, and position into one target.",
+    },
+    {
+      title: "Mirror, Rotate, Step",
+      source: "openverse_027",
+      steps: [
+        { params: { a: -1, b: 0, c: 0, d: 1, e: 0, f: 0 } },
+        { params: rotateAffine(12) },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 18, f: 0 } },
+      ],
+      goal: "Combine reflection, rotation, and translation in sequence.",
+      explore: "By this stage, you should read each affine stage as a geometric sentence.",
+    },
+    {
+      title: "Zoom, Rotate, Counterstep",
+      source: "openverse_039",
+      steps: [
+        { params: { a: 1.12, b: 0, c: 0, d: 1.12, e: 0, f: 0 } },
+        { params: rotateAffine(-12) },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: -18, f: 0 } },
+      ],
+      goal: "Combine scale, rotation, and a balancing translation.",
+      explore: "Scale and rotation amplify positioning mistakes, so translation becomes precise work.",
+    },
+    {
+      title: "Step, Step, Shear",
+      source: "openverse_025",
+      steps: [
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 18, f: 0 } },
+        { params: { a: 1, b: 0, c: 0, d: 1, e: 0, f: -16 } },
+        { params: { a: 1, b: 0, c: 0.22, d: 1, e: 0, f: 0 } },
+      ],
+      goal: "Chain two translations then shear.",
+      explore: "This lesson isolates how repeated movement accumulates before deformation.",
+    },
+    {
+      title: "Shear, Mirror, Rotate",
+      source: "openverse_029",
+      steps: [
+        { params: { a: 1, b: 0, c: 0.22, d: 1, e: 0, f: 0 } },
+        { params: { a: -1, b: 0, c: 0, d: 1, e: 0, f: 0 } },
+        { params: rotateAffine(12) },
+      ],
+      goal: "Compose skew, reflection, and rotation into one path.",
+      explore: "At this depth, predicting intermediate orientation is the core skill.",
+    },
+    {
+      title: "Final Matrix Kata",
+      source: "openverse_032",
+      steps: [
+        { params: { a: 1, b: 0, c: 0, d: 1, e: -18, f: 0 } },
+        { params: { a: -1, b: 0, c: 0, d: 1, e: 0, f: 0 } },
+        { params: { a: 1.12, b: 0, c: 0.22, d: 1.12, e: 0, f: 16 } },
+      ],
+      goal: "Master a full three-stage affine compound transform.",
+      explore: "Use all your matrix instincts: translation, reflection, anisotropic-style skew-scale, and final framing.",
+    },
+  ];
+
+  const affineChapters = affineLessons.map((lesson, index) => ({
+    title: lesson.title,
+    belt: `Affine ${index + 1}/15`,
+    source: lesson.source,
+    tools: ["affine"],
+    solution: graphFromSteps((Array.isArray(lesson.steps) ? lesson.steps : []).map((step) => ({ type: "affine", params: step.params }))),
+    unlockAfter: [],
+    lines: [
+      `Master Bitshan opens the matrix ledger for lesson ${index + 1}.`,
+      lesson.explore,
+      "Write the six affine terms carefully: a, b, c, d shape the grid, while e and f slide it.",
+    ],
+    hints: [
+      lesson.goal,
+      lesson.explore,
+      "Try one affine node at a time and match the target by comparing position, tilt, and rotation before scoring.",
+    ],
+  }));
+
+  const kernelLessons = [
+    {
+      title: "Identity: The Mirror Rests",
+      source: "openverse_043",
+      steps: [{ type: "kernel", params: { size: 3, values: [[0, 0, 0], [0, 1, 0], [0, 0, 0]], normalize: false, scale: 1, bias: 0 } }],
+      goal: "Apply the identity kernel to see the original image unchanged.",
+      explore: "The identity kernel at the center; zeros everywhere else. No transformation occurs.",
+    },
+    {
+      title: "The Gentle Blur",
+      source: "openverse_045",
+      steps: [{ type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } }],
+      goal: "Apply a weighted blur kernel to smooth the image.",
+      explore: "The center pixel is weighted heaviest; neighbors contribute softer influence.",
+    },
+    {
+      title: "The Sharp Edges Wake",
+      source: "openverse_047",
+      steps: [{ type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } }],
+      goal: "Apply a sharpen kernel to enhance edges.",
+      explore: "The center is amplified while neighbors are subtracted. The image develops hard boundaries.",
+    },
+    {
+      title: "The Edge Detection Lamp",
+      source: "openverse_049",
+      steps: [{ type: "kernel", params: { size: 3, values: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], normalize: false, scale: 0.55, bias: 128 } }],
+      goal: "Apply an edge detection kernel to find boundaries.",
+      explore: "All neighbors are subtracted from the amplified center. Edges appear bright; flat areas vanish.",
+    },
+    {
+      title: "The Embossed Relief",
+      source: "openverse_051",
+      steps: [{ type: "kernel", params: { size: 3, values: [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], normalize: false, scale: 0.72, bias: 128 } }],
+      goal: "Apply an emboss kernel to create a 3D relief effect.",
+      explore: "Diagonal weighting creates the illusion of depth. Light sources appear directional.",
+    },
+    {
+      title: "Blur Then Sharpen",
+      source: "openverse_052",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+      ],
+      goal: "Apply blur then sharpen in sequence.",
+      explore: "Smoothing first, then enhancement. The blur recovers detail that was lost.",
+    },
+    {
+      title: "Sharpen Then Blur",
+      source: "openverse_053",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+      ],
+      goal: "Apply sharpen then blur in reverse order.",
+      explore: "Enhancement first becomes overwhelmed by smoothing. The order inverts the effect.",
+    },
+    {
+      title: "Edges Then Softened",
+      source: "openverse_054",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], normalize: false, scale: 0.55, bias: 128 } },
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+      ],
+      goal: "Detect edges then smooth them.",
+      explore: "Edges are found, then diffused. Harsh lines become whispers.",
+    },
+    {
+      title: "Softened Then Edges",
+      source: "openverse_055",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], normalize: false, scale: 0.55, bias: 128 } },
+      ],
+      goal: "Smooth the image then find its edges.",
+      explore: "Blurred regions produce softer, broader edges. Preprocessing changes what is found.",
+    },
+    {
+      title: "Relief Then Sharpened",
+      source: "openverse_056",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], normalize: false, scale: 0.72, bias: 128 } },
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+      ],
+      goal: "Apply emboss then sharpen the result.",
+      explore: "3D relief is enhanced further. Light and shadow become more dramatic.",
+    },
+    {
+      title: "Blur, Sharpen, Blur Again",
+      source: "openverse_059",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+      ],
+      goal: "Chain three kernels: blur, sharpen, blur.",
+      explore: "Multiple passes create compound effects. Smoothing then enhancement then smoothing produces unique detail.",
+    },
+    {
+      title: "Edges, Blur, Then Sharp",
+      source: "openverse_060",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], normalize: false, scale: 0.55, bias: 128 } },
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+      ],
+      goal: "Detect edges, then smooth them, then sharpen.",
+      explore: "Post-processing an edge map reveals different features than detection alone.",
+    },
+    {
+      title: "Relief, Sharpen, Edges",
+      source: "openverse_061",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], normalize: false, scale: 0.72, bias: 128 } },
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], normalize: false, scale: 0.55, bias: 128 } },
+      ],
+      goal: "Chain relief, sharpen, then edge detection.",
+      explore: "The 3D illusion is sharpened before edges are found. Combination reveals structural details.",
+    },
+    {
+      title: "Blur, Emboss, Then Sharp",
+      source: "openverse_062",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[1, 2, 1], [2, 4, 2], [1, 2, 1]], normalize: true, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], normalize: false, scale: 0.72, bias: 128 } },
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+      ],
+      goal: "Smooth, then emboss, then sharpen.",
+      explore: "Embossing after blur creates a softer 3D effect. Final sharpening adds crispness.",
+    },
+    {
+      title: "Sharpen, Edges, Relief",
+      source: "openverse_064",
+      steps: [
+        { type: "kernel", params: { size: 3, values: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], normalize: false, scale: 1, bias: 0 } },
+        { type: "kernel", params: { size: 3, values: [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]], normalize: false, scale: 0.55, bias: 128 } },
+        { type: "kernel", params: { size: 3, values: [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]], normalize: false, scale: 0.72, bias: 128 } },
+      ],
+      goal: "Chain sharpen, edge detection, then emboss.",
+      explore: "Starting with enhancement then detecting edges in a sharpened image, finally applying relief.",
+    },
+  ];
+
+  const kernelChapters = kernelLessons.map((lesson, index) => ({
+    title: lesson.title,
+    belt: `Kernel ${index + 1}/15`,
+    source: lesson.source,
+    tools: ["kernel"],
+    solution: graphFromSteps(lesson.steps),
+    unlockAfter: [],
+    lines: [
+      `Master Bitshan places a woven mat before lesson ${index + 1}.`,
+      lesson.explore,
+      "Build the kernel matrix carefully. Weighted centers and edge treatments change how the neighbors influence the result.",
+    ],
+    hints: [
+      lesson.goal,
+      lesson.explore,
+      "Add kernel nodes one at a time. Watch the preview update as each layer is applied.",
+    ],
+  }));
+
+  return [...colorChapters, ...affineChapters, ...kernelChapters];
 }
 
 
